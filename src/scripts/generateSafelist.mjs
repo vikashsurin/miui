@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { sizes } from '../lib/styles/size.ts';
+import { bg } from '../lib/styles/bg.ts';
 
 function extractClasses(obj) {
     const classes = [];
@@ -13,26 +14,19 @@ function extractClasses(obj) {
 }
 const safelist = [
     ...extractClasses(sizes),
+    ...extractClasses(bg),
 
 ];
 
-console.log('Safelist classes:', safelist);
-
 async function generateSafelist() {
-    // const safelistClasses = [
-    //     'bg-red-500',
-    //     'text-lg',
-    //     'hover:bg-green-500',
-    //     // add dynamically generated classes here
-    // ];
-
-    const content = safelist.join(' ');
-    const filePath = path.join(process.cwd(), 'dist', 'safelist.txt');
+    const content = JSON.stringify(safelist, null, 2)
+    console.log('Generated safelist content:', content);
+    const filePath = path.join(process.cwd(), 'dist', 'safelist.json');
 
     await fs.mkdir(path.dirname(filePath), { recursive: true });
     await fs.writeFile(filePath, content);
 
-    console.log('Safelist file written to', filePath);
+
 }
 
 generateSafelist().catch(console.error);
